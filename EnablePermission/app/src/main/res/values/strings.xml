@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Enable Permission</string>
+    <string name="enable_bt">Enable Bluetooth</string>
+    <string name="enable_location">Enable Location</string>
+</resources>

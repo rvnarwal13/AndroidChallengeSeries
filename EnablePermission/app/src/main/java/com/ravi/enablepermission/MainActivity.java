@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ReceiveIntent receiveIntent = new ReceiveIntent();
+
         enableBt = findViewById(R.id.btn_enable_bt);
         enableLoc = findViewById(R.id.btn_enable_location);
 

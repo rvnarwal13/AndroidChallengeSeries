@@ -19,38 +19,34 @@
         android:textColor="@color/black"
         android:inputType="text"
         android:textSize="20sp"
-        android:labelFor="@id/tv_display_text"
         android:autofillHints="enter name" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_click_me"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_input_field"
-        app:layout_constraintBottom_toTopOf="@+id/tv_display_text"
-        android:text="@string/display_text"
-        android:clickable="true"
-        android:visibility="visible"
         android:background="@drawable/button"
+        android:clickable="true"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:text="@string/display_text"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        />
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/rv_display_data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_input_field" />
 
-    <TextView
-        android:id="@+id/tv_display_text"
-        android:layout_width="200sp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_display_data"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textSize="24sp"
-        android:textColor="@color/black"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

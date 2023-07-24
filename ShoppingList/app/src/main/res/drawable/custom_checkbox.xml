@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- custom_checkbox_background.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Checked state -->
+    <item android:state_checked="true">
+        <layer-list>
+            <!-- Outer border -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#FF3366" />
+                    <stroke
+                        android:width="2dp"
+                        android:color="#FF0000" />
+                    <corners android:radius="4dp" />
+                </shape>
+            </item>
+            <!-- Inner check mark (in white) -->
+            <item
+                android:left="8dp"
+                android:right="8dp"
+                android:top="8dp"
+                android:bottom="8dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="#FFFFFF" />
+                    <corners android:radius="2dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+    <!-- Unchecked state -->
+    <item>
+        <layer-list>
+            <!-- Outer border -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#CCCCCC" />
+                    <stroke
+                        android:width="2dp"
+                        android:color="#555555" />
+                    <corners android:radius="4dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

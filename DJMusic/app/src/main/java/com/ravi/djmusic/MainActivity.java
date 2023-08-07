@@ -1,36 +1,25 @@
 package com.ravi.djmusic;
 
-import android.Manifest;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DeviceEvent {
     private static final String[] permissionsToGrant = {
             "android.permission.READ_MEDIA_AUDIO",
             "android.permission.READ_MEDIA_IMAGES",
             "android.permission.READ_MEDIA_VIDEO"
     };
-
-    private ActivityResultLauncher<String> getMediaLauncher;
     private ActivityResultLauncher<String[]> grantPermissions;
 
     @Override
@@ -38,77 +27,76 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AppCompatButton getMediaFile = findViewById(R.id.btn_get_song);
-
         grantPermissions = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
-                    permissions -> {
-                        boolean isGranted = true;
-                        for(String permission : permissions.keySet()) {
-                            if(!Boolean.TRUE.equals(permissions.get(permission))) {
-                                isGranted = false;
-                                break;
-                            }
-                        }
-                        if(isGranted) {
-                            Toast.makeText(this, "Permissions granted.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(this, "All permissions are not granted.", Toast.LENGTH_SHORT).show();
+                permissions -> {
+                    boolean isGranted = true;
+                    for (String permission : permissions.keySet()) {
+                        if (!Boolean.TRUE.equals(permissions.get(permission))) {
+                            isGranted = false;
+                            break;
                         }
                     }
-                );
-
-        getMediaLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                new ActivityResultCallback<Uri>() {
-                    @Override
-                    public void onActivityResult(Uri result) {
-                        if(result != null) {
-                            try {
-                                retrieveAndDisplaySongDetails(result);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
+                    if (isGranted) {
+                        loadFragmentFolders();
+                    } else {
+                        grantPermissions();
                     }
-                });
+                }
+        );
 
-        getMediaFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getMediaLauncher.launch("*/*");
-            }
-        });
-        grantPermissions();
+        if (savedInstanceState == null) {
+            grantPermissions();
+        }
+    }
+
+    private void loadFragmentFolders() {
+        FolderFragment folderFragment = new FolderFragment();
+        loadFragment(folderFragment, false);
+    }
+
+    private void loadFragment(Fragment fragment, boolean addToBackStack) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        if (addToBackStack) {
+            transaction.addToBackStack(null);
+        }
+
+        transaction.replace(R.id.fragment_loader, fragment);
+        transaction.commit();
+    }
+
+    @Override
+    public void createAudioFragment(String folderPath) {
+        AudioFragment audioListFragment = new AudioFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("folderPath", folderPath);
+        audioListFragment.setArguments(bundle);
+        loadFragment(audioListFragment, true);
+    }
+
+    @Override
+    public void createAudioPlayerFragment(List<MediaFile> audioFiles, int position) {
+        AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("list", (Serializable) audioFiles);
+        bundle.putInt("position", position);
+        audioPlayerFragment.setArguments(bundle);
+        loadFragment(audioPlayerFragment, true);
     }
 
     private void grantPermissions() {
         boolean allPermissionsGranted = true;
-        for(String permission: permissionsToGrant) {
-            if(ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+        for (String permission : permissionsToGrant) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
                 allPermissionsGranted = false;
                 break;
             }
         }
-        if(!allPermissionsGranted) {
+        if (!allPermissionsGranted) {
             grantPermissions.launch(permissionsToGrant);
+        } else {
+            loadFragmentFolders();
         }
-    }
-
-    private void retrieveAndDisplaySongDetails(Uri uri) throws IOException {
-        MediaMetadataRetriever retriever = AudioMetadataHelper.getAudioMetadata(getApplicationContext(), uri);
-        String uriData = AudioMetadataHelper.getMetadataString(retriever);
-        showDetailsDialog(uriData);
-    }
-
-    private void showDetailsDialog(String details) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Song Details");
-        builder.setMessage(details);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
     }
 }

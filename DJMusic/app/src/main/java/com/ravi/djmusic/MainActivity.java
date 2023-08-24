@@ -5,16 +5,25 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements DeviceEvent {
+
     private static final String[] permissionsToGrant = {
             "android.permission.READ_MEDIA_AUDIO",
             "android.permission.READ_MEDIA_IMAGES",
@@ -37,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements DeviceEvent {
                         }
                     }
                     if (isGranted) {
-                        loadFragmentFolders();
+                        loadAudioFragmentFolders();
                     } else {
                         grantPermissions();
                     }
@@ -49,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements DeviceEvent {
         }
     }
 
-    private void loadFragmentFolders() {
+    public void loadAudioFragmentFolders() {
         FolderFragment folderFragment = new FolderFragment();
         loadFragment(folderFragment, false);
     }
@@ -96,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements DeviceEvent {
         if (!allPermissionsGranted) {
             grantPermissions.launch(permissionsToGrant);
         } else {
-            loadFragmentFolders();
+            loadAudioFragmentFolders();
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.ravi.djmusic;
+package com.ravi.djmusic.dataobjects;
 
 import android.graphics.Bitmap;
 

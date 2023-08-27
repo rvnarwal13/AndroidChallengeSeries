@@ -1,4 +1,4 @@
-package com.ravi.djmusic;
+package com.ravi.djmusic.ui.fragments.video;
 
 import android.os.Bundle;
 
@@ -10,6 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ravi.djmusic.R;
+import com.ravi.djmusic.adapters.FolderAdapter;
+import com.ravi.djmusic.dataobjects.MediaFile;
+import com.ravi.djmusic.helper.GetFilesHelper;
+import com.ravi.djmusic.interfaces.DeviceEvent;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +24,7 @@ import java.util.Set;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FolderFragment extends Fragment implements FolderAdapter.FolderClickListener {
+public class VideoFolderFragment extends Fragment implements FolderAdapter.FolderClickListener{
 
     private DeviceEvent deviceEvent;
 
@@ -31,30 +37,20 @@ public class FolderFragment extends Fragment implements FolderAdapter.FolderClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_folder, container, false);
+        View view = inflater.inflate(R.layout.fragment_video_folder, container, false);
 
         if(isAdded()) {
             deviceEvent = (DeviceEvent) getActivity();
         }
 
-        RecyclerView recyclerView = view.findViewById(R.id.folders_list);
+        RecyclerView recyclerView = view.findViewById(R.id.video_folders_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        List<String> folderPaths = getDistinctFolderPaths(GetFilesHelper.getAllAudioFilesFromStorage(requireContext()));
+        List<String> folderPaths = getDistinctFolderPaths(GetFilesHelper.getAllVideoFilesFromStorage(requireContext()));
         FolderAdapter folderAdapter = new FolderAdapter(folderPaths, this);
         recyclerView.setAdapter(folderAdapter);
 
         return view;
-    }
-
-    private List<String> getFolderNames(List<String> folderPaths) {
-        List<String> folderNames = new ArrayList<>();
-
-        for(String folderPath : folderPaths) {
-            folderNames.add(folderPath.substring(folderPath.lastIndexOf('/')+1));
-        }
-
-        return folderNames;
     }
 
     private List<String> getDistinctFolderPaths(List<MediaFile> audioFiles) {
@@ -69,7 +65,7 @@ public class FolderFragment extends Fragment implements FolderAdapter.FolderClic
     @Override
     public void onFolderClick(String folderPath) {
         if(deviceEvent != null) {
-            deviceEvent.createAudioFragment(folderPath);
+            deviceEvent.createVideoFragment(folderPath);
         }
     }
 }

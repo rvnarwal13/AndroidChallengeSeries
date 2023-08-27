@@ -1,4 +1,4 @@
-package com.ravi.djmusic;
+package com.ravi.djmusic.dataobjects;
 
 public class MediaFile {
     private String name;

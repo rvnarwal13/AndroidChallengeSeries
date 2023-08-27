@@ -1,6 +1,6 @@
-package com.ravi.djmusic;
+package com.ravi.djmusic.ui.fragments.audio;
 
-import android.media.Image;
+import android.annotation.SuppressLint;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +15,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.IOError;
+import com.ravi.djmusic.dataobjects.AudioFileMetaData;
+import com.ravi.djmusic.dataobjects.MediaFile;
+import com.ravi.djmusic.helper.AudioMetadataHelper;
+import com.ravi.djmusic.R;
+
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +46,10 @@ public class AudioPlayerFragment extends Fragment {
     private AudioFileMetaData audioFileMetaData;
     private static int toggleMusic = 0;
 
+    public void setMediaPlayer(MediaPlayer mediaPlayer) {
+        this.mediaPlayer = mediaPlayer;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +61,6 @@ public class AudioPlayerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_audio_player, container, false);
 
-        mediaPlayer = new MediaPlayer();
         seekBar = view.findViewById(R.id.music_progress);
         stopMusic = view.findViewById(R.id.stop_music);
         reverse10Sec = view.findViewById(R.id.reverse_10sec);
@@ -100,6 +103,7 @@ public class AudioPlayerFragment extends Fragment {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 try {
+                    mediaPlayer.release();
                     playNextAudio();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -116,20 +120,25 @@ public class AudioPlayerFragment extends Fragment {
         playPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    playPause.setBackground(requireContext().getDrawable(R.drawable.play_music));
-                } else {
-                    if (isStop) {
-                        try {
-                            playMusic();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                if (audioFileMetaData != null) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                        playPause.setBackground(requireContext().getDrawable(R.drawable.play_music));
                     } else {
-                        mediaPlayer.start();
-                        playPause.setBackground(requireContext().getDrawable(R.drawable.pause_music));
+                        if (isStop) {
+                            try {
+                                playMusic();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            mediaPlayer.start();
+                            playPause.setBackground(requireContext().getDrawable(R.drawable.pause_music));
+                            handler.postDelayed(updateSeekBarProgress, 10);
+                        }
                     }
+                } else {
+                    Toast.makeText(getContext(), "Unable to play media.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -184,13 +193,13 @@ public class AudioPlayerFragment extends Fragment {
         repeatToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(toggleMusic == REPEAT_ALL) {
+                if (toggleMusic == REPEAT_ALL) {
                     toggleMusic = REPEAT_ONE;
                     repeatToggle.setBackground(requireContext().getDrawable(R.drawable.repeat_one));
-                } else if(toggleMusic == REPEAT_ONE) {
+                } else if (toggleMusic == REPEAT_ONE) {
                     toggleMusic = SHUFFLE;
                     repeatToggle.setBackground(requireContext().getDrawable(R.drawable.shuffle));
-                } else if(toggleMusic == SHUFFLE) {
+                } else if (toggleMusic == SHUFFLE) {
                     toggleMusic = REPEAT_ALL;
                     repeatToggle.setBackground(requireContext().getDrawable(R.drawable.repeat_all));
                 }
@@ -207,9 +216,9 @@ public class AudioPlayerFragment extends Fragment {
             } else {
                 position--;
             }
-        } else if(toggleMusic == REPEAT_ONE) {
+        } else if (toggleMusic == REPEAT_ONE) {
             // do nothing
-        } else if(toggleMusic == SHUFFLE) {
+        } else if (toggleMusic == SHUFFLE) {
             Random random = new Random();
             position = random.nextInt(audioFiles.size());
         }
@@ -223,15 +232,16 @@ public class AudioPlayerFragment extends Fragment {
             } else {
                 position++;
             }
-        } else if(toggleMusic == REPEAT_ONE) {
+        } else if (toggleMusic == REPEAT_ONE) {
             // do nothing
-        } else if(toggleMusic == SHUFFLE) {
+        } else if (toggleMusic == SHUFFLE) {
             Random random = new Random();
             position = random.nextInt(audioFiles.size());
         }
         playMusic();
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void playMusic() throws IOException {
         setMusicContent();
         try {
@@ -251,27 +261,34 @@ public class AudioPlayerFragment extends Fragment {
     }
 
     private String formatDuration(Duration duration) {
-        long seconds = duration.getSeconds();
+        long seconds = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            seconds = duration.getSeconds();
+        }
         long absSeconds = Math.abs(seconds);
         String formattedDuration = String.format("%02d:%02d", absSeconds / 60, absSeconds % 60);
         return seconds < 0 ? "-" + formattedDuration : formattedDuration;
     }
 
     private void setMusicContent() throws IOException {
-        audioFileMetaData = MetadataHelper.getAudioMetadataString(audioFiles.get(position));
-        mediaName.setText(audioFiles.get(position).getName());
-        if (audioFileMetaData.getArtist() != null) {
-            artistName.setText(audioFileMetaData.getArtist());
-        }
-        if (audioFileMetaData.getAlbum() != null) {
-            albumName.setText(audioFileMetaData.getAlbum());
-        }
-        if (audioFileMetaData.getAlbumArt() != null) {
-            mediaImage.setImageBitmap(audioFileMetaData.getAlbumArt());
+        audioFileMetaData = AudioMetadataHelper.getAudioMetadataString(audioFiles.get(position));
+        if (audioFileMetaData != null) {
+            mediaName.setText(audioFiles.get(position).getName());
+            if (audioFileMetaData.getArtist() != null) {
+                artistName.setText(audioFileMetaData.getArtist());
+            }
+            if (audioFileMetaData.getAlbum() != null) {
+                albumName.setText(audioFileMetaData.getAlbum());
+            }
+            if (audioFileMetaData.getAlbumArt() != null) {
+                mediaImage.setImageBitmap(audioFileMetaData.getAlbumArt());
+            }
+        } else {
+            Toast.makeText(getContext(), "Unable to play media.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private Runnable updateSeekBarProgress = new Runnable() {
+    private final Runnable updateSeekBarProgress = new Runnable() {
         @Override
         public void run() {
             if (mediaPlayer.isPlaying()) {
@@ -284,10 +301,15 @@ public class AudioPlayerFragment extends Fragment {
         }
     };
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (handler != null && updateSeekBarProgress != null) {
+    private void pauseMusicPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+            mediaPlayer.release();
+        }
+    }
+
+    private void destroyMusicPlayer() {
+        if (handler != null) {
             handler.removeCallbacks(updateSeekBarProgress);
         }
 
@@ -296,5 +318,11 @@ public class AudioPlayerFragment extends Fragment {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        destroyMusicPlayer();
     }
 }

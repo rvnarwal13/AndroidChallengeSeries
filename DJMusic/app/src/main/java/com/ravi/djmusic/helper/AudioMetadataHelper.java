@@ -1,12 +1,15 @@
-package com.ravi.djmusic;
+package com.ravi.djmusic.helper;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 
+import com.ravi.djmusic.dataobjects.MediaFile;
+import com.ravi.djmusic.dataobjects.AudioFileMetaData;
+
 import java.io.IOException;
 
-public class MetadataHelper {
+public class AudioMetadataHelper {
     public static AudioFileMetaData getAudioMetadataString(MediaFile mediaFile) throws IOException {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         AudioFileMetaData audioFileMetaData = null;

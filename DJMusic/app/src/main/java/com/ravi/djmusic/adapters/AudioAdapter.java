@@ -1,4 +1,4 @@
-package com.ravi.djmusic;
+package com.ravi.djmusic.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.ravi.djmusic.dataobjects.MediaFile;
+import com.ravi.djmusic.R;
 
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.files_list_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_files_list_layout, parent, false);
         return new ViewHolder(view);
     }
 
@@ -30,8 +33,6 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MediaFile audioFile = audioFiles.get(position);
         holder.audioNameTextView.setText(audioFile.getName());
-
-
     }
 
     @Override

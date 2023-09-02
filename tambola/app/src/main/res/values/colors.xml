@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="default_card_item">#E91E63</color>
+    <color name="clicked_card_item">#5ee05a</color>
+    <color name="used_card_item">#5995de</color>
+</resources>

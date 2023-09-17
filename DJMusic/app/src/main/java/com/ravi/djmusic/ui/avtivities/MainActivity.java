@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity implements DeviceEvent {
 
     private static final String[] permissionsToGrant = {
             "android.permission.READ_MEDIA_AUDIO",
-            "android.permission.READ_MEDIA_VIDEO"
+            "android.permission.READ_MEDIA_VIDEO",
+            "android.permission.RECORD_AUDIO"
     };
     private ActivityResultLauncher<String[]> grantPermissions;
 

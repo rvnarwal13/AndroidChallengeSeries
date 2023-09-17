@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".ui.fragments.audio.AudioPlayerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,11 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.chibde.visualizer.BarVisualizer
+            android:id="@+id/audio_visualizer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/music_name"
+            />
+
         <ImageView
             android:id="@+id/music_image"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:src="@drawable/default_music_image_icon"
+            android:visibility="gone"
+            android:src="@drawable/music_image_light"
             app:layout_constraintBottom_toTopOf="@+id/music_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/artist_name"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +50,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Artist : NA"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/album_name"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +62,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Album : NA"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/play_controls"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline10"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -102,8 +114,8 @@
                 android:id="@+id/music_progress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:progressTint="@color/black"
-                android:thumbTint="@color/black"
+                android:progressTint="@color/white"
+                android:thumbTint="@color/white"
                 app:layout_constraintEnd_toEndOf="@+id/guideline90"
                 app:layout_constraintStart_toEndOf="@+id/guideline10"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -113,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/guideline90"
                 app:layout_constraintTop_toTopOf="parent" />

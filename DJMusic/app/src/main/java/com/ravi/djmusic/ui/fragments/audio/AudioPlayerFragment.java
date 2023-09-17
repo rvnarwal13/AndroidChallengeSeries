@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -17,6 +18,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chibde.visualizer.BarVisualizer;
 import com.ravi.djmusic.dataobjects.AudioFileMetaData;
 import com.ravi.djmusic.dataobjects.MediaFile;
 import com.ravi.djmusic.helper.AudioMetadataHelper;
@@ -25,6 +27,7 @@ import com.ravi.djmusic.R;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -45,6 +48,7 @@ public class AudioPlayerFragment extends Fragment {
     private Handler handler;
     private AudioFileMetaData audioFileMetaData;
     private static int toggleMusic = 0;
+    private BarVisualizer barVisualizer;
 
     public void setMediaPlayer(MediaPlayer mediaPlayer) {
         this.mediaPlayer = mediaPlayer;
@@ -61,6 +65,7 @@ public class AudioPlayerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_audio_player, container, false);
 
+        barVisualizer = view.findViewById(R.id.audio_visualizer);
         seekBar = view.findViewById(R.id.music_progress);
         stopMusic = view.findViewById(R.id.stop_music);
         reverse10Sec = view.findViewById(R.id.reverse_10sec);
@@ -75,6 +80,10 @@ public class AudioPlayerFragment extends Fragment {
         albumName = view.findViewById(R.id.album_name);
         timeElapsed = view.findViewById(R.id.time_elapsed);
         totalTime = view.findViewById(R.id.total_time);
+
+        barVisualizer.setColor(ContextCompat.getColor(requireContext(), R.color.white));
+        barVisualizer.setDensity(70);
+        barVisualizer.setPlayer(mediaPlayer.getAudioSessionId());
 
         audioFiles = (List<MediaFile>) getArguments().getSerializable("list");
         position = getArguments().getInt("position");
@@ -282,6 +291,11 @@ public class AudioPlayerFragment extends Fragment {
             }
             if (audioFileMetaData.getAlbumArt() != null) {
                 mediaImage.setImageBitmap(audioFileMetaData.getAlbumArt());
+                mediaImage.setVisibility(View.VISIBLE);
+                barVisualizer.setVisibility(View.GONE);
+            } else {
+                barVisualizer.setVisibility(View.VISIBLE);
+                mediaImage.setVisibility(View.GONE);
             }
         } else {
             Toast.makeText(getContext(), "Unable to play media.", Toast.LENGTH_SHORT).show();

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "938547090585",
+    "firebase_url": "https://list-mate-41deb-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "list-mate-41deb",
+    "storage_bucket": "list-mate-41deb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:938547090585:android:2a12df8812f1a2c43d5408",
+        "android_client_info": {
+          "package_name": "com.ravi.listmate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "938547090585-4cseukmec1jv03d4mndmf806sd0reddt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ravi.listmate",
+            "certificate_hash": "d73519e834c4b86f378d5145ef54e99f7b457e48"
+          }
+        },
+        {
+          "client_id": "938547090585-gelagu0v7h9dot4ocm48ejgssog3u543.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq_pYUw46OrpnVyPletOr7UIvK2WP7nYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "938547090585-gelagu0v7h9dot4ocm48ejgssog3u543.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
